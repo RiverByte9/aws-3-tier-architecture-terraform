@@ -53,12 +53,12 @@ resource "aws_db_instance" "postgres" {
 
 // Create a DB subnet group for the RDS instance
 resource "aws_db_subnet_group" "main" {
-  name       = "rds-subnet-group"
+  name       = "rds-subnet-groupnew"
   subnet_ids = [aws_subnet.private_a.id, aws_subnet.private_b.id]
 
   tags = merge(
     local.common_tags,
-    tomap({ "Name" = "${local.prefix}-rds-subnet-group" })
+    tomap({ "Name" = "${local.prefix}-rds-subnet-groupnew" })
   )
 }
 
