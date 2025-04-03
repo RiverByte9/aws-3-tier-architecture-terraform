@@ -69,17 +69,17 @@ resource "aws_db_instance" "postgres" {
 #   )
 # }
 # Create public subnet
-resource "aws_subnet" "public" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = var.subnet_cidr_list[0]
-  availability_zone = "${var.region}a"
-  map_public_ip_on_launch = true
+# resource "aws_subnet" "public" {
+#   vpc_id            = aws_vpc.main.id
+#   cidr_block        = var.subnet_cidr_list[0]
+#   availability_zone = "${var.region}a"
+#   map_public_ip_on_launch = true
 
-  tags = merge(
-    local.common_tags,
-    tomap({ "Name" = "${var.prefix}-public-subnet" })
-  )
-}
+#   tags = merge(
+#     local.common_tags,
+#     tomap({ "Name" = "${var.prefix}-public-subnet" })
+#   )
+# }
 
 # Create private subnet in AZ a
 resource "aws_subnet" "private_a" {
@@ -106,6 +106,7 @@ resource "aws_subnet" "private_b" {
 }
 
 # Update the DB subnet group to include both private subnets
+# Create a DB subnet group for the RDS instance
 resource "aws_db_subnet_group" "main" {
   name       = "${var.prefix}-db-subnet-group"
   subnet_ids = [aws_subnet.private_a.id, aws_subnet.private_b.id]

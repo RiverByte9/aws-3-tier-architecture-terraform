@@ -9,26 +9,27 @@ resource "aws_vpc" "main" {
   )
 }
 
-resource "aws_subnet" "public" {
-  cidr_block              = var.subnet_cidr_list[0]
-  map_public_ip_on_launch = true # only for public subnet
-  vpc_id                  = aws_vpc.main.id
-  availability_zone       = "${data.aws_region.current.name}a"
-
+# Create private subnet in AZ a
+resource "aws_subnet" "private_a" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = var.private_subnet_cidr_a
+  availability_zone = "${var.region}a"
+  
   tags = merge(
     local.common_tags,
-    tomap({ "Name" = "${local.prefix}-public" })
+    tomap({ "Name" = "${var.prefix}-private-subnet-a" })
   )
 }
 
-resource "aws_subnet" "private" {
-  cidr_block        = var.subnet_cidr_list[1]
+# Create private subnet in AZ b
+resource "aws_subnet" "private_b" {
   vpc_id            = aws_vpc.main.id
-  availability_zone = "${data.aws_region.current.name}a"
-
+  cidr_block        = var.private_subnet_cidr_b
+  availability_zone = "${var.region}b"
+  
   tags = merge(
     local.common_tags,
-    tomap({ "Name" = "${local.prefix}-private" })
+    tomap({ "Name" = "${var.prefix}-private-subnet-b" })
   )
 }
 
