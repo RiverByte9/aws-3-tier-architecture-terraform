@@ -9,17 +9,19 @@ output "vpc_id" {
   value       = aws_vpc.main.id
 }
 
-output "private_subnet_ids" {
-  description = "The IDs of the private subnets"
-  value       = [aws_subnet.private_a.id, aws_subnet.private_b.id]
-}
 
 output "rds_endpoint" {
   description = "The endpoint of the RDS instance"
   value       = aws_db_instance.postgres.endpoint
 }
 
+
+output "private_subnet_ids" {
+  description = "The IDs of the private subnets"
+  value       = [aws_subnet.private_a.id, aws_subnet.private_b.id]
+}
+
 output "ec2_instance_id" {
-  description = "The ID of the EC2 instance"
+  description = "The ID of the private EC2 instance"
   value       = aws_instance.private.id
 }
