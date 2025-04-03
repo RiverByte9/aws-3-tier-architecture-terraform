@@ -6,7 +6,7 @@ resource "random_password" "rds_password" {
 
 // Store the RDS password in AWS Secrets Manager
 resource "aws_secretsmanager_secret" "rds_password" {
-  name = "${var.prefix}-rds-password-new"  # Changed name to avoid deletion issue
+  name = "${var.prefix}-rds-password-newset"  # Changed name to avoid deletion issue
 }
 
 // Store the secret value
@@ -39,7 +39,7 @@ resource "aws_db_instance" "postgres" {
   engine_version         = "14.12"  # Make sure this version is available in AWS
   instance_class         = "db.t3.micro"
   allocated_storage      = 30
-  username               = "rdsdbadmin"  # Changed from "admin" to avoid AWS restriction
+  username               = "newadmin"  # Changed from "admin" to avoid AWS restriction
   password               = random_password.rds_password.result
   vpc_security_group_ids = [aws_security_group.rds.id]
   db_subnet_group_name   = aws_db_subnet_group.main.name
