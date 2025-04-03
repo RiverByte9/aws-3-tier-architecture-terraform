@@ -59,13 +59,60 @@ resource "aws_db_instance" "postgres" {
 }
 
 // Create a DB subnet group for the RDS instance
-resource "aws_db_subnet_group" "main" {
-  name       = "${var.prefix}-db-subnet-group"
-  subnet_ids = [aws_subnet.private.id]
+# resource "aws_db_subnet_group" "main" {
+#   name       = "${var.prefix}-db-subnet-group"
+#   subnet_ids = [aws_subnet.private.id]
+
+#   tags = merge(
+#     local.common_tags,
+#     tomap({ "Name" = "${local.prefix}-db-subnet-group" })
+#   )
+# }
+# Create public subnet
+resource "aws_subnet" "public" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = var.subnet_cidr_list[0]
+  availability_zone = "${var.region}a"
+  map_public_ip_on_launch = true
 
   tags = merge(
     local.common_tags,
-    tomap({ "Name" = "${local.prefix}-db-subnet-group" })
+    tomap({ "Name" = "${var.prefix}-public-subnet" })
+  )
+}
+
+# Create private subnet in AZ a
+resource "aws_subnet" "private_a" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = var.private_subnet_cidr_a
+  availability_zone = "${var.region}a"
+  
+  tags = merge(
+    local.common_tags,
+    tomap({ "Name" = "${var.prefix}-private-subnet-a" })
+  )
+}
+
+# Create private subnet in AZ b
+resource "aws_subnet" "private_b" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = var.private_subnet_cidr_b
+  availability_zone = "${var.region}b"
+  
+  tags = merge(
+    local.common_tags,
+    tomap({ "Name" = "${var.prefix}-private-subnet-b" })
+  )
+}
+
+# Update the DB subnet group to include both private subnets
+resource "aws_db_subnet_group" "main" {
+  name       = "${var.prefix}-db-subnet-group"
+  subnet_ids = [aws_subnet.private_a.id, aws_subnet.private_b.id]
+
+  tags = merge(
+    local.common_tags,
+    tomap({ "Name" = "${var.prefix}-db-subnet-group" })
   )
 }
 
@@ -99,3 +146,4 @@ resource "aws_security_group" "ec2" {
     tomap({ "Name" = "${local.prefix}-ec2-sg" })
   )
 }
+
