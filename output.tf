@@ -11,7 +11,7 @@ output "vpc_id" {
 
 output "private_subnet_ids" {
   description = "The IDs of the private subnets"
-  value       = aws_subnet.private.*.id
+  value       = [aws_subnet.private_a.id, aws_subnet.private_b.id]
 }
 
 output "rds_endpoint" {

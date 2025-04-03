@@ -1,8 +1,9 @@
 # Private ec2
+# Private ec2
 resource "aws_instance" "private" {
   ami                    = data.aws_ami.amazon_linux.id
   instance_type          = var.instance_type
-  subnet_id              = aws_subnet.private.id
+  subnet_id              = aws_subnet.private_a.id  # Updated reference
   availability_zone      = "${data.aws_region.current.name}a"
   vpc_security_group_ids = [aws_security_group.ssh.id, ]
   key_name               = "ssh-key"
@@ -26,3 +27,4 @@ resource "aws_instance" "public" {
     tomap({ "Name" = "${local.prefix}-public-ec2" })
   )
 }
+
